@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Rotary.App/Rotary.App.csproj" />
+  <Project Path="Rotary.Core/Rotary.Core.csproj" />
+</Solution>

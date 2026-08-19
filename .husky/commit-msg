@@ -1,0 +1,6 @@
+#!bin/sh
+
+# commitlint.net targets net8.0; roll forward so it runs on newer installed runtimes (e.g. net10.0-only machines).
+export DOTNET_ROLL_FORWARD=LatestMajor
+
+dotnet husky run --group commit-msg --args "$1"

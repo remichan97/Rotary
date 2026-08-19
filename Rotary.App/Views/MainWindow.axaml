@@ -1,0 +1,38 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Rotary.App.ViewModels"
+        xmlns:ui="using:FluentAvalonia.UI.Controls"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
+        x:Class="Rotary.App.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Rotary">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainViewModel />
+    </Design.DataContext>
+
+    <ui:FANavigationView PaneDisplayMode="Left"
+                         IsSettingsVisible="False"
+                         IsBackButtonVisible="False">
+        <ui:FANavigationView.MenuItems>
+            <ui:FANavigationViewItem Content="Home">
+                <ui:FANavigationViewItem.IconSource>
+                    <ui:FASymbolIconSource Symbol="Home" />
+                </ui:FANavigationViewItem.IconSource>
+            </ui:FANavigationViewItem>
+        </ui:FANavigationView.MenuItems>
+
+        <ui:FANavigationView.Content>
+            <TextBlock Text="{Binding Greeting}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       FontSize="20" />
+        </ui:FANavigationView.Content>
+    </ui:FANavigationView>
+
+</Window>

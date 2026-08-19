@@ -1,0 +1,36 @@
+{
+  "$schema": "https://alirezanet.github.io/Husky.Net/schema.json",
+  "tasks": [
+    {
+      "name": "Run csharpier",
+      "command": "dotnet",
+      "args": ["csharpier", "format", "${staged}"],
+      "include": [
+        "**/*.cs",
+        "**/*.csx",
+        "**/*.csproj",
+        "**/*.props",
+        "**/*.targets",
+        "**/*.xml",
+        "**/*.config"
+      ]
+    },
+    {
+      "name": "Build Solution",
+      "command": "dotnet",
+      "args": ["build", "--no-restore"]
+    },
+    {
+      "name": "Conventional Commit Lint",
+      "group": "commit-msg",
+      "command": "dotnet",
+      "args": [
+        "commit-lint",
+        "--commit-file",
+        "${args}",
+        "--commit-message-config-file",
+        ".husky/commit-lint.json"
+      ]
+    }
+  ]
+}
