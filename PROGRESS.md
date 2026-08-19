@@ -11,6 +11,11 @@ Running record of what's been worked on, plus open issues/blockers. Newest entri
 
 ## Log
 
+### 2026-08-19 (3)
+- Made the initial commit (`88b3c65`) covering the full project scaffold to date.
+- Fixed the commit-msg hook: `commitlint.net` targets net8.0 and this machine only has net10 runtimes installed, so it failed to launch. `.husky/commit-msg` now exports `DOTNET_ROLL_FORWARD=LatestMajor` before invoking husky. (Note: the tool manifest's `rollForward` field in `dotnet-tools.json` only accepts `true`/`false` and controls tool-version pinning, not runtime resolution — that's not the right knob for this problem.)
+- Talked through `Rotary.Core`'s request/response shape before implementation: `RequestDefinition`/`RequestResult` keep the envelope (method, headers, status, timing) strongly typed while treating the body as opaque text; headers modeled as an ordered list (not a dictionary) to preserve duplicates; `RequestResult` planned as a sealed record hierarchy (`Completed` vs `Failed`) rather than nullable fields, to keep "got a response" and "couldn't get one" distinct. User is implementing this part themselves.
+
 ### 2026-08-19 (2)
 - Phase 0 (shell) done: `App.axaml` now uses `FluentAvaloniaTheme` instead of the stock `FluentTheme`; `MainWindow.axaml` has a minimal `FANavigationView` shell (one "Home" item, content bound to the existing `Greeting` property). Build verified clean, app launches without runtime errors.
 - Learned FluentAvaloniaUI 3.0.2 prefixes its WinUI-ported controls with `FA` (`FANavigationView`, `FASymbolIcon`, etc.) — differs from what the official docs site showed; noted in `CLAUDE.md` so this doesn't need rediscovering.
