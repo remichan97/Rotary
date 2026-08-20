@@ -8,6 +8,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Rotary.App.Models;
 using Rotary.Core.Http;
+using Rotary.Core.Http.Records;
 
 namespace Rotary.App.ViewModels;
 

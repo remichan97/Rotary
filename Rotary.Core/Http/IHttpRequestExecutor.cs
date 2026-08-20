@@ -1,4 +1,6 @@
-﻿namespace Rotary.Core.Http
+﻿using Rotary.Core.Http.Records;
+
+namespace Rotary.Core.Http
 {
     public interface IHttpRequestExecutor
     {

@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Rotary.Core.Http
+namespace Rotary.Core.Http.Records
 {
     public abstract record RequestResult
     {
