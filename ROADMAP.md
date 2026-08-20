@@ -18,3 +18,8 @@ Phased plan for the project, each phase ending in something runnable. Durations 
 - Phase 1 is the highest-value phase to get right early — it's the smallest slice that exercises the whole stack (UI binding, async commands, Core/App boundary, HTTP), so problems there surface before more is built on top.
 - Phases 4–6 (import/export/codegen) don't strictly have to happen in this order — cURL import is likely the fastest win and could move earlier if it's more motivating to build than collections persistence.
 - See `PROGRESS.md` for what's actually been done and current blockers; this file is the forward-looking plan, that one is the running log.
+
+## Backlog (unscheduled — revisit later)
+
+- **Environments** — named variable sets (e.g. `{{baseUrl}}`) substituted into requests at send time, plus a UI for creating/editing/switching between them. Not yet assigned a phase.
+- **Cookie jar** — explicit, user-visible cross-request cookie storage (view/edit/clear, per-domain scoping, expiry), replacing the current implicit behavior where `HttpRequestExecutor`'s shared `HttpClient` silently accumulates and resends cookies via its default `HttpClientHandler`/`CookieContainer`. Needs a model + UI, not just a field.
