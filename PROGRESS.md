@@ -5,12 +5,19 @@ Running record of what's been worked on, plus open issues/blockers. Newest entri
 ## Known Issues / Blockers
 
 - No test project in the solution yet.
-- Open design decision: storage format for Rotary's own collection format (flat JSON files vs SQLite vs one-file-per-collection) — needed before import/export and codegen can be built against a real model.
-- NavigationView sidebar still has one static "Home" menu item — intentionally left alone until collections/persistence (Phase 2) gives it something real to show.
-- No collections/persistence yet, so requests aren't saved anywhere — every session starts blank.
+- Collection persistence (SQLite) exists, but there's no UI yet to create/rename/delete collections, folders, or requests, no drag-reorder, and selecting a tree node doesn't load it into the request builder — the sidebar tree only ever shows what's already in `rotary.db`, which today is nothing. This is most of what's left before the app is actually usable, and it's all UI-side work.
+- `Avalonia.Controls.TreeDataGrid` (the virtualized tree control originally planned for the collection sidebar) is gated behind Avalonia's Accelerate commercial licensing for this project's Avalonia version (12.1.1) — the free Community tier needs a license key + telemetry opt-in we haven't set up, and the last unlicensed version only targets Avalonia 11 core. Sidebar currently uses the base `TreeView` control instead; revisit if tree size/virtualization becomes a real problem, or once licensing is sorted.
 - `HttpRequestExecutor` reads the whole response body as a string; no handling yet for binary responses or very large bodies.
 
 ## Log
+
+### 2026-08-21 (1)
+
+- Phase 2 storage format decided: SQLite (single `rotary.db` file via `Microsoft.Data.Sqlite` + raw SQL via `Dapper`/`Dapper.AOT`), not flat JSON files — one centralized file is easier to protect/back up than many scattered ones, and querying an index (`SELECT Id, Name FROM Collections`) is simpler and less fragile than hand-maintaining a separate manifest file. `Collections`/`Environments`/`EnvironmentVariables`/`Cookies` tables are all created up front (`Rotary.Core/Data/Schema.cs`) so the backlog features are a repository away rather than a schema migration when they get built; only `Collections` has a repository/service today.
+- Added `ICollectionService`/`CollectionService` (`Rotary.Core/Collections`) as the public persistence entry point. `RotaryDatabase`/`CollectionsRepository`/`ICollectionsRepository` are `internal` so nothing outside `Rotary.Core` depends on SQLite/Dapper directly — callers only ever see `ICollectionService`.
+- `CollectionDefinition`/`CollectionNodeDefinition` (`Folder`/`Request`, sealed hierarchy) round-trip through a JSON blob column via `System.Text.Json`. Needed `[JsonPolymorphic]`/`[JsonDerivedType]` on `AuthDefinition` and `CollectionNodeDefinition` (so deserialization picks the right concrete subtype), a custom `HttpMethodJsonConverter` (`HttpMethod` has no built-in STJ support), and a source-generated `RotaryJsonContext` to keep serialization reflection-free/AOT-safe.
+- Hit a real Dapper.AOT + System.Text.Json source-generator interaction bug: a Dapper query parameter sourced from `var x = JsonSerializer.Serialize(..., RotaryJsonContext.Default.X)` failed to compile, because source generators don't see each other's generated output within the same compilation pass, so Dapper.AOT's interceptor generator couldn't resolve the local's type. Fixed by declaring that local with an explicit `string` type instead of `var`.
+- Wired a collapsible collection-tree sidebar into `MainWindow.axaml`/`MainViewModel`: loads the collection index at startup, lazily fetches each collection's full tree via `CollectionService` on first expand (`CollectionTreeNodeViewModel`, driven by a two-way `IsExpanded` binding). Originally built against `Avalonia.Controls.TreeDataGrid`, reverted to base `TreeView` after hitting the licensing wall above (see blockers).
 
 ### 2026-08-19 (4)
 
