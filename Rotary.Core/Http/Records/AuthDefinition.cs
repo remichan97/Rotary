@@ -1,7 +1,19 @@
-﻿using Rotary.Core.Http.Enums;
+﻿using System.Text.Json.Serialization;
+using Rotary.Core.Http.Enums;
 
 namespace Rotary.Core.Http.Records
 {
+    [JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
+    [JsonDerivedType(typeof(NoAuthDefinition), "none")]
+    [JsonDerivedType(typeof(BasicAuthDefinition), "basic")]
+    [JsonDerivedType(typeof(BearerTokenAuthDefinition), "bearer")]
+    [JsonDerivedType(typeof(ApiKeyAuthDefinition), "apiKey")]
+    [JsonDerivedType(typeof(AwsIamAuthDefinition), "awsIam")]
+    [JsonDerivedType(typeof(OauthOneAuthDefinition), "oauth1")]
+    [JsonDerivedType(typeof(OauthTwoAuthDefinition), "oauth2")]
+    [JsonDerivedType(typeof(DigestAuthDefinition), "digest")]
+    [JsonDerivedType(typeof(NtlmAuthDefinition), "ntlm")]
+    [JsonDerivedType(typeof(HawkAuthDefinition), "hawk")]
     public record AuthDefinition
     {
         public sealed record NoAuthDefinition : AuthDefinition { }

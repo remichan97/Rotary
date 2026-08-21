@@ -1,7 +1,11 @@
-﻿namespace Rotary.Core.Http.Records
+﻿using System.Text.Json.Serialization;
+using Rotary.Core.Http.Json;
+
+namespace Rotary.Core.Http.Records
 {
     public record RequestDefinition
     {
+        [JsonConverter(typeof(HttpMethodJsonConverter))]
         public HttpMethod Method { get; init; } = HttpMethod.Get;
         public string Url { get; init; } = string.Empty;
         public IList<KeyValuePair<string, string>> Headers { get; init; } = [];
