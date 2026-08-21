@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Rotary.App.Models;
+using Rotary.Core.Collections;
 using Rotary.Core.Http;
 using Rotary.Core.Http.Records;
 
@@ -15,9 +16,20 @@ namespace Rotary.App.ViewModels;
 public partial class MainViewModel : ViewModelBase
 {
     private readonly IHttpRequestExecutor _executor = new HttpRequestExecutor();
+    private readonly ICollectionService _collectionService = new CollectionService();
+
+    public MainViewModel()
+    {
+        _ = LoadCollectionsAsync();
+    }
 
     public IReadOnlyList<string> HttpMethods { get; } =
     ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"];
+
+    public ObservableCollection<CollectionTreeNodeViewModel> CollectionTree { get; } = [];
+
+    [ObservableProperty]
+    public partial bool IsCollectionTreeVisible { get; set; } = true;
 
     [ObservableProperty]
     public partial string Method { get; set; } = "GET";
@@ -52,6 +64,18 @@ public partial class MainViewModel : ViewModelBase
     public bool HasError => !string.IsNullOrEmpty(ResponseError);
 
     public ObservableCollection<HeaderRow> ResponseHeaders { get; } = [];
+
+    [RelayCommand]
+    private void ToggleCollectionTree() => IsCollectionTreeVisible = !IsCollectionTreeVisible;
+
+    private async Task LoadCollectionsAsync()
+    {
+        var index = await _collectionService.GetCollectionIndexAsync();
+        foreach (var entry in index)
+        {
+            CollectionTree.Add(new CollectionTreeNodeViewModel(entry, _collectionService));
+        }
+    }
 
     [RelayCommand]
     private void AddHeader() => RequestHeaders.Add(new HeaderRow());
